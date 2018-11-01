@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var cTable = require("console.table");
 
 // Create a "Prompt" with a series of questions.
 function loadLast(products) {
@@ -19,7 +20,10 @@ inquirer
     }
 
   ]).then(function(user) {
-     console.log("We only have " + products[user.whatID-1].stock_quantity + " in stock.");
+
+    var userIdChoice = user.whatID
+
+    //  console.log("We only have " + products[user.whatID-1].stock_quantity + " in stock.");
     
     if (parseInt(user.howMany) >= products[user.whatID-1].stock_quantity) {
   
@@ -29,34 +33,37 @@ inquirer
 
     console.log("The price of your order is " + "$" + user.howMany * products[user.whatID-1].price);
   }
-  })
+  var reducedQuantity =  products[user.whatID-1].stock_quantity- user.howMany;
+  console.log(reducedQuantity);
+  console.log(userIdChoice);
 
+  updateProduct(reducedQuantity,userIdChoice);
+  })
+    
 }
 
-//   var reducedQuantity = user.howMany - products[user.whatID-1].stock_quantity;
+function updateProduct(reducedQuantity,userIdChoice) {
+  console.log("New quantity...\n");
+  console.log(userIdChoice);
+  console.log(reducedQuantity);
+  connection.query(
+    "UPDATE products SET ? WHERE ?",
+    [
+      {
+        stock_quantity: reducedQuantity
+      },     
+      {
+        id: userIdChoice
+      },
+     ],
+    
+    function(err, res) {
+    // console.log (res);
+      // console.log(err);
+    }
 
-//   function updateProduct() {
-//     console.log("New quantity...\n");
-//     connection.query(
-//       "UPDATE products SET ? WHERE ?",
-//       [
-//         {
-//           quantity: reducedQuantity
-//         },     
-//        ],
-
-//       function(err, res) {
-//         // console.log(res + " products updated!\n");
-//         console.log (res)
-
-//         // Call deleteProduct AFTER the UPDATE completes
-//         // deleteProduct();
-//         updateProduct();
-//       }
-
-//   )
-// }
-
+)
+}
 
 
 var connection = mysql.createConnection({
@@ -86,9 +93,10 @@ function afterConnection() {
         var element = res[i];
         console.log("Id: "+ element.id + " - " + "Product Name: " + element.product_name + " - "+ "Price: " + element.price);
       }
-      // console.log(res);
+    // console.table(res);
+      //  console.log(res);
       loadLast(res);
-      connection.end();
+      // connection.end();
     });
   }
 
@@ -99,6 +107,6 @@ function afterConnection() {
 
 
   // Need some js to remove units from products. 
-  // Find a way to display table.
+
 
 
