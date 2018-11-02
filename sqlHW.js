@@ -34,8 +34,8 @@ inquirer
     console.log("The price of your order is " + "$" + user.howMany * products[user.whatID-1].price);
   }
   var reducedQuantity =  products[user.whatID-1].stock_quantity- user.howMany;
-  console.log(reducedQuantity);
-  console.log(userIdChoice);
+  // console.log(reducedQuantity);
+  // console.log(userIdChoice);
 
   updateProduct(reducedQuantity,userIdChoice);
   })
@@ -44,8 +44,8 @@ inquirer
 
 function updateProduct(reducedQuantity,userIdChoice) {
   console.log("New quantity...\n");
-  console.log(userIdChoice);
-  console.log(reducedQuantity);
+  // console.log(userIdChoice);
+  // console.log(reducedQuantity);
   connection.query(
     "UPDATE products SET ? WHERE ?",
     [
@@ -61,9 +61,12 @@ function updateProduct(reducedQuantity,userIdChoice) {
     // console.log (res);
       // console.log(err);
     }
-
+    
 )
+finalTableDisplay();
+
 }
+
 
 
 var connection = mysql.createConnection({
@@ -89,24 +92,32 @@ connection.connect(function(err) {
 function afterConnection() {
   connection.query("SELECT * FROM products", function(err, res) {
       if (err) throw err;
-      for (var i = 0; i < res.length; i++) {
-        var element = res[i];
-        console.log("Id: "+ element.id + " - " + "Product Name: " + element.product_name + " - "+ "Price: " + element.price);
-      }
-    // console.table(res);
-      //  console.log(res);
+      // for (var i = 0; i < res.length; i++) {
+      //   var element = res[i];
+      //   console.log("Id: "+ element.id + " - " + "Product Name: " + element.product_name + " - "+ "Price: " + element.price);
+      // }
+    console.table(res);
+      // console.log(res);
       loadLast(res);
       // connection.end();
     });
   }
 
-  
-  
+  function finalTableDisplay(){
+    connection.query("SELECT * FROM products", function(err,res) {
+    if (err) throw err;
+    console.table(res);
+  }
+)};
+
+// finalTableDisplay();
+
+ 
  
   
 
 
-  // Need some js to remove units from products. 
+  // Need to redisplay new values in table
 
 
 
