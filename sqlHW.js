@@ -110,14 +110,7 @@ function afterConnection() {
   }
 )};
 
-// finalTableDisplay();
 
- 
- 
-  
-
-
-  // Need to redisplay new values in table
 
 
 
